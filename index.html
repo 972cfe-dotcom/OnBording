@@ -3,145 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת ניהול מסמכים</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>המערכת - דף כניסה</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <header class="main-header">
-            <div class="container">
-                <h1>מערכת ניהול מסמכים</h1>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="#home" class="nav-link active">בית</a></li>
-                        <li><a href="#upload" class="nav-link">העלאה</a></li>
-                        <li><a href="#documents" class="nav-link">מסמכים</a></li>
-                        <li><a href="#search" class="nav-link">חיפוש</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div class="container">
-                <!-- Home Section -->
-                <section id="home" class="page-section active">
-                    <div class="welcome-banner">
-                        <h2>ברוכים הבאים למערכת ניהול המסמכים</h2>
-                        <p>מערכת מתקדמת לניהול, אחסון וחיפוש מסמכים דיגיטליים</p>
-                        <div class="quick-stats">
-                            <div class="stat-card">
-                                <h3 id="total-docs">0</h3>
-                                <p>מסמכים</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3 id="total-size">0 MB</h3>
-                                <p>נפח כולל</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3 id="recent-uploads">0</h3>
-                                <p>העלאות השבוע</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Upload Section -->
-                <section id="upload" class="page-section">
-                    <h2>העלאת מסמכים</h2>
-                    <div class="upload-area">
-                        <div class="drop-zone" id="dropZone">
-                            <div class="drop-zone-content">
-                                <i class="upload-icon">📁</i>
-                                <p>גרור קבצים לכאן או</p>
-                                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
-                                    בחר קבצים
-                                </button>
-                                <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg">
-                                <p class="file-types">תומך ב: PDF, DOC, DOCX, TXT, תמונות</p>
-                            </div>
-                        </div>
-                        <div class="upload-progress" id="uploadProgress" style="display: none;">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progressFill"></div>
-                            </div>
-                            <p id="progressText">מעלה...</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Documents Section -->
-                <section id="documents" class="page-section">
-                    <div class="section-header">
-                        <h2>רשימת מסמכים</h2>
-                        <div class="filter-controls">
-                            <select id="typeFilter">
-                                <option value="">כל הסוגים</option>
-                                <option value="pdf">PDF</option>
-                                <option value="doc">Word</option>
-                                <option value="txt">טקסט</option>
-                                <option value="image">תמונות</option>
-                            </select>
-                            <input type="date" id="dateFilter" placeholder="תאריך">
-                        </div>
-                    </div>
-                    <div class="documents-grid" id="documentsGrid">
-                        <!-- Documents will be loaded here dynamically -->
-                        <div class="empty-state">
-                            <p>אין מסמכים עדיין. התחל בהעלאת המסמך הראשון!</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Search Section -->
-                <section id="search" class="page-section">
-                    <h2>חיפוש במסמכים</h2>
-                    <div class="search-container">
-                        <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="חפש בתוכן המסמכים...">
-                            <button class="search-btn" onclick="performSearch()">🔍</button>
-                        </div>
-                        <div class="search-filters">
-                            <label>
-                                <input type="checkbox" id="searchTitles" checked> חפש בכותרות
-                            </label>
-                            <label>
-                                <input type="checkbox" id="searchContent" checked> חפש בתוכן
-                            </label>
-                            <label>
-                                <input type="checkbox" id="searchTags"> חפש בתגיות
-                            </label>
-                        </div>
-                    </div>
-                    <div class="search-results" id="searchResults">
-                        <!-- Search results will appear here -->
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <footer class="main-footer">
-            <div class="container">
-                <p>&copy; 2024 מערכת ניהול מסמכים. פותח עם ❤️</p>
-                <div class="footer-links">
-                    <a href="#about">אודות</a>
-                    <a href="#help">עזרה</a>
-                    <a href="#contact">צור קשר</a>
+    <div class="container">
+        <div class="welcome-card">
+            <h1>ברוכים הבאים למערכת</h1>
+            <p>המערכת נקיה ומוכנה לקבל אפיון חדש</p>
+            <div class="status">
+                <div class="status-item">
+                    <span class="status-label">GitHub:</span>
+                    <span class="status-value connected">מחובר</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Netlify:</span>
+                    <span class="status-value connected">פרוס</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Database:</span>
+                    <span class="status-value pending">מחכה להגדרה</span>
                 </div>
             </div>
-        </footer>
+            <div class="next-steps">
+                <h3>מה הלאה?</h3>
+                <p>המערכת מוכנה לקבל את האפיון המלא ולהתחיל בפיתוח</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Loading overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <p>טוען...</p>
-    </div>
-
-    <!-- Toast notifications -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <script src="scripts/main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
