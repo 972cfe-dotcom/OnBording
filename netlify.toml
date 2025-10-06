@@ -1,0 +1,88 @@
+[build]
+  # אין צורך ב-build command עבור אתר סטטי
+  publish = "."
+  
+  # Build environment variables
+  environment = { NODE_ENV = "production" }
+
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Redirects for SPA behavior
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  condition = "Not Path"
+
+# Error pages
+[[redirects]]
+  from = "/404"
+  to = "/404.html"
+  status = 404
+
+# Form handling (if needed in the future)
+# [[forms]]
+#   name = "contact"
+#   action = "/success"
+
+# Functions settings (for future serverless functions)
+[functions]
+  directory = "functions/"
+  node_bundler = "esbuild"
+
+# Dev server settings for local development
+[dev]
+  command = "python -m http.server 8000"
+  port = 8000
+  publish = "."
+  autoLaunch = true
+
+# Environment variables for different contexts
+[context.production.environment]
+  NODE_ENV = "production"
+  API_URL = "https://api.yourdomain.com"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "preview"
+  API_URL = "https://api-staging.yourdomain.com"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
+  API_URL = "https://api-dev.yourdomain.com"
