@@ -1,7 +1,7 @@
 // Application Configuration
 const CONFIG = {
     // API Base URL - Auto-detect based on environment
-    API_BASE_URL: window.location.origin + '/api',
+    API_BASE_URL: window.location.origin + '/.netlify/functions',
     
     // API Endpoints
     ENDPOINTS: {

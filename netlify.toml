@@ -1,0 +1,46 @@
+[build]
+  publish = "."
+  command = "echo 'No build needed for static site'"
+
+[build.environment]
+  NODE_ENV = "production"
+
+# Basic headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    X-Robots-Tag = "noindex"
+
+# Functions directory
+[functions]
+  directory = "functions/"
+
+# Environment variables
+[context.production.environment]
+  NODE_ENV = "production"
+  DATABASE_URL = "postgresql://neondb_owner:npg_lOh28bqVrHYC@ep-curly-heart-aeh5ihpv-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&search_path=hr"
+  JWT_SECRET = "hr-system-jwt-secret-key-2024-secure-token"
+  SESSION_TIMEOUT_HOURS = "8"
+  ENABLE_AUDIT_LOGS = "true"
+  MAX_FILE_SIZE_MB = "25"
+  COMPANY_NAME = "החברה שלנו"
+  DEFAULT_LANGUAGE = "he" 
+  SUPPORT_EMAIL = "support@company.com"
+
+# SPA redirect ONLY for non-function routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Role = [""]}
+
+# Make sure API calls don't get redirected  
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
