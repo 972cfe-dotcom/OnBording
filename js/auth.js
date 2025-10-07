@@ -51,7 +51,7 @@ class AuthManager {
     // Register new user
     async register(registrationData) {
         try {
-            const response = await API.post('/auth-register', registrationData);
+            const response = await API.post(CONFIG.ENDPOINTS.REGISTER, registrationData);
             
             if (response.success) {
                 // Auto-login after successful registration

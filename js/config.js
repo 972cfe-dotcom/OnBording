@@ -8,6 +8,7 @@ const CONFIG = {
         HEALTH: '/api-health',
         DB_SETUP: '/db-setup',
         LOGIN: '/auth-login',
+        REGISTER: '/auth-register',
         VERIFY: '/auth-verify',
         USERS: '/users-api',
         EMPLOYEES: '/employees-api'
