@@ -21,9 +21,10 @@
                 <div class="login-header">
                     <i class="fas fa-users"></i>
                     <h1>מערכת משאבי אנוש</h1>
-                    <p>התחברות למערכת</p>
+                    <p id="auth-subtitle">התחברות למערכת</p>
                 </div>
                 
+                <!-- Login Form -->
                 <form id="login-form">
                     <div class="form-group">
                         <label for="username">שם משתמש או אימייל</label>
@@ -46,8 +47,97 @@
                         התחבר למערכת
                     </button>
                 </form>
+
+                <!-- Registration Form -->
+                <form id="register-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="reg-username">שם משתמש *</label>
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="reg-username" name="username" required minlength="3">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-email">אימייל *</label>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="reg-email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-password">סיסמה *</label>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="reg-password" name="password" required minlength="8">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-confirm-password">אימות סיסמה *</label>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="reg-confirm-password" name="confirm_password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-first-name">שם פרטי *</label>
+                        <div class="input-group">
+                            <i class="fas fa-user-tag"></i>
+                            <input type="text" id="reg-first-name" name="first_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-last-name">שם משפחה *</label>
+                        <div class="input-group">
+                            <i class="fas fa-user-tag"></i>
+                            <input type="text" id="reg-last-name" name="last_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <p><i class="fas fa-info-circle"></i> דרישות סיסמה:</p>
+                        <ul>
+                            <li>לפחות 8 תווים</li>
+                            <li>אות גדולה אחת לפחות</li>
+                            <li>אות קטנה אחת לפחות</li>
+                            <li>מספר אחד לפחות</li>
+                        </ul>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        צור חשבון חדש
+                    </button>
+                </form>
                 
-                <div id="login-error" class="error-message" style="display: none;"></div>
+                <!-- Toggle between Login/Register -->
+                <div class="auth-toggle">
+                    <button type="button" id="show-register-btn" class="toggle-btn">
+                        אין לך חשבון? <strong>הרשם כאן</strong>
+                    </button>
+                    <button type="button" id="show-login-btn" class="toggle-btn" style="display: none;">
+                        יש לך חשבון? <strong>התחבר כאן</strong>
+                    </button>
+                </div>
+
+                <!-- Admin Setup (shown only when no users exist) -->
+                <div class="admin-setup" id="admin-setup" style="display: none;">
+                    <div class="setup-info">
+                        <i class="fas fa-info-circle"></i>
+                        <p>נראה שזו ההתקנה הראשונה של המערכת</p>
+                    </div>
+                    <button type="button" id="create-admin-btn" class="btn btn-secondary">
+                        <i class="fas fa-user-shield"></i>
+                        צור משתמשי מערכת ראשוניים
+                    </button>
+                </div>
+                
+                <div id="auth-error" class="error-message" style="display: none;"></div>
+                <div id="auth-success" class="success-message" style="display: none;"></div>
             </div>
             
             <div class="system-status">

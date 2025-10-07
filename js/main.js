@@ -187,10 +187,330 @@ class HRApp {
         document.getElementById('login-screen').style.display = 'flex';
         document.getElementById('app-screen').style.display = 'none';
         
+        // Set up authentication forms
+        this.setupAuthForms();
+        
+        // Check if system needs initial setup
+        this.checkSystemSetup();
+        
         // Set up login success handler
         Auth.onLogin(() => {
             this.showMainApp();
         });
+    }
+
+    // Setup authentication forms (login and registration)
+    setupAuthForms() {
+        // Clear any existing listeners
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterBtn = document.getElementById('show-register-btn');
+        const showLoginBtn = document.getElementById('show-login-btn');
+        
+        // Clone forms to remove old event listeners
+        if (loginForm) {
+            const newLoginForm = loginForm.cloneNode(true);
+            loginForm.parentNode.replaceChild(newLoginForm, loginForm);
+        }
+        
+        if (registerForm) {
+            const newRegisterForm = registerForm.cloneNode(true);
+            registerForm.parentNode.replaceChild(newRegisterForm, registerForm);
+        }
+
+        // Get the new form references
+        const newLoginForm = document.getElementById('login-form');
+        const newRegisterForm = document.getElementById('register-form');
+
+        // Login form submission
+        if (newLoginForm) {
+            newLoginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.handleLogin(e.target);
+            });
+        }
+
+        // Registration form submission
+        if (newRegisterForm) {
+            newRegisterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await this.handleRegistration(e.target);
+            });
+        }
+
+        // Toggle between login and registration
+        if (showRegisterBtn) {
+            showRegisterBtn.addEventListener('click', () => {
+                this.showRegistrationForm();
+            });
+        }
+
+        if (showLoginBtn) {
+            showLoginBtn.addEventListener('click', () => {
+                this.showLoginForm();
+            });
+        }
+
+        // Password confirmation validation for registration
+        const regPassword = document.getElementById('reg-password');
+        const regConfirmPassword = document.getElementById('reg-confirm-password');
+        
+        if (regPassword && regConfirmPassword) {
+            const validatePasswordMatch = () => {
+                if (regConfirmPassword.value && regPassword.value !== regConfirmPassword.value) {
+                    regConfirmPassword.setCustomValidity('הסיסמאות אינן תואמות');
+                } else {
+                    regConfirmPassword.setCustomValidity('');
+                }
+            };
+            
+            regPassword.addEventListener('input', validatePasswordMatch);
+            regConfirmPassword.addEventListener('input', validatePasswordMatch);
+        }
+    }
+
+    // Show registration form
+    showRegistrationForm() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+        document.getElementById('show-register-btn').style.display = 'none';
+        document.getElementById('show-login-btn').style.display = 'block';
+        document.getElementById('auth-subtitle').textContent = 'הרשמה למערכת';
+        
+        // Clear messages
+        this.clearAuthMessages();
+    }
+
+    // Show login form
+    showLoginForm() {
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('show-register-btn').style.display = 'block';
+        document.getElementById('show-login-btn').style.display = 'none';
+        document.getElementById('auth-subtitle').textContent = 'התחברות למערכת';
+        
+        // Clear messages
+        this.clearAuthMessages();
+    }
+
+    // Handle login form submission
+    async handleLogin(form) {
+        try {
+            const formData = new FormData(form);
+            const credentials = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+
+            // Show loading state
+            const loginBtn = form.querySelector('#login-btn');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> מתחבר...';
+            loginBtn.disabled = true;
+
+            // Clear previous error
+            this.clearAuthMessages();
+
+            // Attempt login
+            const result = await Auth.login(credentials);
+
+            if (result.success) {
+                this.showSuccessMessage('התחברת בהצלחה!');
+                // Login handler will automatically call showMainApp()
+            } else {
+                this.showErrorMessage(result.error || 'שגיאה בהתחברות למערכת');
+            }
+
+        } catch (error) {
+            console.error('Login error:', error);
+            this.showErrorMessage('שגיאה בהתחברות למערכת');
+        } finally {
+            // Restore button state
+            const loginBtn = form.querySelector('#login-btn');
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> התחבר למערכת';
+            loginBtn.disabled = false;
+        }
+    }
+
+    // Handle registration form submission
+    async handleRegistration(form) {
+        try {
+            const formData = new FormData(form);
+            const registrationData = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirm_password: formData.get('confirm_password'),
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name')
+            };
+
+            // Show loading state
+            const registerBtn = form.querySelector('#register-btn');
+            const originalText = registerBtn.innerHTML;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> יוצר חשבון...';
+            registerBtn.disabled = true;
+
+            // Clear previous messages
+            this.clearAuthMessages();
+
+            // Attempt registration
+            const result = await Auth.register(registrationData);
+
+            if (result.success) {
+                this.showSuccessMessage(result.message || 'החשבון נוצר בהצלחה! מעביר לדף הבית...');
+                
+                // Auto-login happened in Auth.register, so just wait a moment and show main app
+                setTimeout(() => {
+                    // The onLogin callback will automatically trigger showMainApp()
+                }, 2000);
+            } else {
+                this.showErrorMessage(result.error || 'שגיאה ביצירת החשבון החדש');
+            }
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            this.showErrorMessage('שגיאה ביצירת החשבון החדש');
+        } finally {
+            // Restore button state
+            const registerBtn = form.querySelector('#register-btn');
+            registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> צור חשבון חדש';
+            registerBtn.disabled = false;
+        }
+    }
+
+    // Show error message
+    showErrorMessage(message) {
+        const errorDiv = document.getElementById('auth-error');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    }
+
+    // Show success message
+    showSuccessMessage(message) {
+        const successDiv = document.getElementById('auth-success');
+        if (successDiv) {
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+    }
+
+    // Clear authentication messages
+    clearAuthMessages() {
+        const errorDiv = document.getElementById('auth-error');
+        const successDiv = document.getElementById('auth-success');
+        
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+        }
+        
+        if (successDiv) {
+            successDiv.style.display = 'none';
+            successDiv.textContent = '';
+        }
+    }
+
+    // Check if system needs initial setup
+    async checkSystemSetup() {
+        try {
+            // Try to check if any users exist by attempting a simple API call
+            const response = await fetch('/.netlify/functions/users-api');
+            
+            if (response.status === 401 || response.status === 403) {
+                // No authentication = likely no admin users exist
+                this.showAdminSetup();
+            } else {
+                // Hide admin setup if users exist
+                document.getElementById('admin-setup').style.display = 'none';
+            }
+        } catch (error) {
+            console.log('Could not check system setup status');
+            // Show admin setup as fallback
+            this.showAdminSetup();
+        }
+    }
+
+    // Show admin setup option
+    showAdminSetup() {
+        const adminSetupDiv = document.getElementById('admin-setup');
+        if (adminSetupDiv) {
+            adminSetupDiv.style.display = 'block';
+            
+            // Set up admin creation button
+            const createAdminBtn = document.getElementById('create-admin-btn');
+            if (createAdminBtn) {
+                createAdminBtn.addEventListener('click', () => {
+                    this.createInitialAdmin();
+                });
+            }
+        }
+    }
+
+    // Create initial admin users
+    async createInitialAdmin() {
+        try {
+            const createAdminBtn = document.getElementById('create-admin-btn');
+            const originalText = createAdminBtn.innerHTML;
+            
+            // Show loading state
+            createAdminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> יוצר משתמשים...';
+            createAdminBtn.disabled = true;
+
+            // Clear previous messages
+            this.clearAuthMessages();
+
+            // Call admin creation API
+            const response = await API.post('/create-admin', {});
+
+            if (response.success) {
+                // Show success with login details
+                this.showAdminCreatedMessage(response);
+                
+                // Hide admin setup
+                document.getElementById('admin-setup').style.display = 'none';
+            } else {
+                this.showErrorMessage(response.error || 'שגיאה ביצירת משתמשי מערכת');
+            }
+
+        } catch (error) {
+            console.error('Admin creation error:', error);
+            this.showErrorMessage('שגיאה ביצירת משתמשי מערכת');
+        } finally {
+            // Restore button state
+            const createAdminBtn = document.getElementById('create-admin-btn');
+            createAdminBtn.innerHTML = '<i class="fas fa-user-shield"></i> צור משתמשי מערכת ראשוניים';
+            createAdminBtn.disabled = false;
+        }
+    }
+
+    // Show admin created success message
+    showAdminCreatedMessage(response) {
+        const successMessage = `
+            <div style="text-align: right; line-height: 1.6;">
+                <h4>🎉 משתמשי המערכת נוצרו בהצלחה!</h4>
+                <p>נוצרו המשתמשים הבאים:</p>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    ${response.users.map(user => `
+                        <div style="margin-bottom: 10px; padding: 8px; border-left: 3px solid #3498db; background: white;">
+                            <strong>${user.role}</strong><br>
+                            שם משתמש: <code>${user.username}</code><br>
+                            סיסמה: <code>${user.password}</code><br>
+                            <small>${user.description}</small>
+                        </div>
+                    `).join('')}
+                </div>
+                <p style="color: #e74c3c; font-weight: bold;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    חשוב: שמור פרטים אלה במקום בטוח ושנה את הסיסמאות לאחר ההתחברות הראשונה!
+                </p>
+                <p>כעת תוכל להתחבר למערכת עם אחד מהמשתמשים שנוצרו.</p>
+            </div>
+        `;
+        
+        this.showSuccessMessage(successMessage);
     }
 
     // Show main application

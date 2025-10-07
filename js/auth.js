@@ -48,6 +48,32 @@ class AuthManager {
         return this.token;
     }
 
+    // Register new user
+    async register(registrationData) {
+        try {
+            const response = await API.post('/auth-register', registrationData);
+            
+            if (response.success) {
+                // Auto-login after successful registration
+                this.storeToken(response.token);
+                this.storeUser(response.user);
+                
+                // Set up auto-logout
+                this.setupAutoLogout();
+                
+                // Call login callbacks (registration auto-logs in)
+                this.loginCallbacks.forEach(callback => callback(response.user));
+                
+                return { success: true, user: response.user, message: response.message };
+            } else {
+                return { success: false, error: response.error };
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            return { success: false, error: 'שגיאה ביצירת החשבון החדש' };
+        }
+    }
+
     // Login user
     async login(credentials) {
         try {
