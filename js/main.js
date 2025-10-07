@@ -267,6 +267,36 @@ class HRApp {
             regPassword.addEventListener('input', validatePasswordMatch);
             regConfirmPassword.addEventListener('input', validatePasswordMatch);
         }
+
+        // ID number validation for registration
+        const regIdNumber = document.getElementById('reg-id-number');
+        if (regIdNumber) {
+            regIdNumber.addEventListener('input', () => {
+                const idNumber = regIdNumber.value.replace(/\D/g, ''); // Remove non-digits
+                regIdNumber.value = idNumber;
+                
+                if (idNumber.length !== 9 && idNumber.length > 0) {
+                    regIdNumber.setCustomValidity('תעודת זהות חייבת להכיל 9 ספרות בדיוק');
+                } else {
+                    regIdNumber.setCustomValidity('');
+                }
+            });
+        }
+
+        // Phone number validation for registration
+        const regPhone = document.getElementById('reg-phone');
+        if (regPhone) {
+            regPhone.addEventListener('input', () => {
+                const phone = regPhone.value;
+                const phonePattern = /^0\d{1,2}-?\d{7}$/;
+                
+                if (phone && !phonePattern.test(phone.replace(/\s/g, ''))) {
+                    regPhone.setCustomValidity('פורמט טלפון לא תקין (לדוגמה: 050-1234567)');
+                } else {
+                    regPhone.setCustomValidity('');
+                }
+            });
+        }
     }
 
     // Show registration form
@@ -342,7 +372,9 @@ class HRApp {
                 password: formData.get('password'),
                 confirm_password: formData.get('confirm_password'),
                 first_name: formData.get('first_name'),
-                last_name: formData.get('last_name')
+                last_name: formData.get('last_name'),
+                id_number: formData.get('id_number'),
+                phone: formData.get('phone')
             };
 
             // Show loading state

@@ -29,16 +29,16 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { username, email, password, confirm_password, first_name, last_name } = JSON.parse(event.body || '{}');
+    const { username, email, password, confirm_password, first_name, last_name, id_number, phone } = JSON.parse(event.body || '{}');
 
     // Validation
-    if (!username || !email || !password || !confirm_password || !first_name || !last_name) {
+    if (!username || !email || !password || !confirm_password || !first_name || !last_name || !id_number || !phone) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
           success: false,
-          error: 'כל השדות הם חובה'
+          error: 'כל השדות הם חובה (שם משתמש, אימייל, סיסמה, אימות סיסמה, שם פרטי, שם משפחה, תעודת זהות וטלפון)'
         })
       };
     }
@@ -64,6 +64,30 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ 
           success: false,
           error: 'כתובת אימייל לא תקינה'
+        })
+      };
+    }
+
+    // Validate Israeli ID number
+    if (!/^\d{9}$/.test(id_number)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false,
+          error: 'תעודת זהות חייבת להכיל 9 ספרות בלבד'
+        })
+      };
+    }
+
+    // Validate phone number
+    if (!/^0\d{1,2}-?\d{7}$/.test(phone.replace(/\s/g, ''))) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false,
+          error: 'מספר טלפון לא תקין (פורמט: 0X-XXXXXXX או 0XX-XXXXXXX)'
         })
       };
     }
@@ -125,7 +149,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check if username already exists
+    // Check if username, email or ID number already exists
     const existingUser = await pool.query(
       'SELECT user_id FROM users WHERE username = $1 OR email = $2',
       [username, email]
@@ -138,6 +162,23 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ 
           success: false,
           error: 'שם משתמש או אימייל כבר קיימים במערכת'
+        })
+      };
+    }
+
+    // Check if ID number already exists
+    const existingEmployee = await pool.query(
+      'SELECT employee_id FROM employees WHERE id_number = $1',
+      [id_number]
+    );
+
+    if (existingEmployee.rows.length > 0) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false,
+          error: 'תעודת זהות כבר קיימת במערכת'
         })
       };
     }
@@ -158,14 +199,16 @@ exports.handler = async (event, context) => {
 
     // Create basic employee record
     const employeeResult = await pool.query(
-      `INSERT INTO employees (user_id, first_name, last_name, email, employee_number) 
-       VALUES ($1, $2, $3, $4, $5) 
+      `INSERT INTO employees (user_id, first_name, last_name, email, phone, id_number, employee_number) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) 
        RETURNING employee_id`,
       [
         newUser.user_id, 
         first_name, 
         last_name, 
-        email, 
+        email,
+        phone,
+        id_number,
         await generateEmployeeNumber()
       ]
     );
@@ -181,6 +224,8 @@ exports.handler = async (event, context) => {
         email, 
         first_name, 
         last_name,
+        phone,
+        id_number,
         employee_id: employeeId
       })]
     );
@@ -216,7 +261,9 @@ exports.handler = async (event, context) => {
           is_active: newUser.is_active,
           employee_id: employeeId,
           first_name,
-          last_name
+          last_name,
+          phone,
+          id_number
         },
         token
       })

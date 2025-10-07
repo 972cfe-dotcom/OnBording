@@ -9,17 +9,24 @@
     "start": "netlify dev --port 3000",
     "deploy": "netlify deploy --prod"
   },
-  "keywords": ["hr", "management", "documents", "employees", "hebrew", "rtl"],
+  "keywords": [
+    "hr",
+    "management",
+    "documents",
+    "employees",
+    "hebrew",
+    "rtl"
+  ],
   "author": "HR Development Team",
   "license": "MIT",
   "dependencies": {
-    "pg": "^8.11.3",
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "jsonwebtoken": "^9.0.2",
-    "uuid": "^9.0.1",
-    "cors": "^2.8.5"
+    "pg": "^8.11.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "netlify-cli": "^17.10.1"
+    "netlify-cli": "^17.38.1"
   }
 }
