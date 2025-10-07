@@ -30,17 +30,8 @@
   DEFAULT_LANGUAGE = "he" 
   SUPPORT_EMAIL = "support@company.com"
 
-# SPA redirect ONLY for non-function routes
+# SPA redirect for everything except functions
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false
-  conditions = {Role = [""]}
-
-# Make sure API calls don't get redirected  
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  force = true

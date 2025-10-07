@@ -2,12 +2,12 @@
   "name": "hr-management-system",
   "version": "1.0.0",
   "description": "מערכת משאבי אנוש מתקדמת עם ניהול מסמכים ואימות",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
-    "dev": "netlify dev",
-    "build": "echo 'Static site - no build required'",
-    "start": "netlify dev --port 3000",
-    "deploy": "netlify deploy --prod"
+    "dev": "node server.js",
+    "build": "echo 'No build step required'",
+    "start": "node server.js",
+    "test": "echo 'No tests specified'"
   },
   "keywords": [
     "hr",
@@ -22,11 +22,12 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "uuid": "^9.0.1"
   },
-  "devDependencies": {
-    "netlify-cli": "^17.38.1"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
