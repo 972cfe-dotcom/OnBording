@@ -1417,3 +1417,66 @@ body.role-hr_manager .admin-hr-only {
     font-size: 0.9rem;
     color: #2c3e50;
 }
+
+/* Help Section Styles */
+.help-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.help-section h4 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.help-section h4 i {
+    color: #17a2b8;
+}
+
+.help-content p {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.help-content strong {
+    color: #495057;
+}
+
+.demo-users {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.demo-users h5 {
+    color: #495057;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.demo-user {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.demo-users small {
+    display: block;
+    margin-top: 0.75rem;
+    color: #868e96;
+    font-style: italic;
+}

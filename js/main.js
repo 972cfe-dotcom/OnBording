@@ -511,6 +511,12 @@ class HRApp {
         `;
         
         this.showSuccessMessage(successMessage);
+        
+        // Show demo users in help section
+        const demoUsersDiv = document.getElementById('demo-users');
+        if (demoUsersDiv) {
+            demoUsersDiv.style.display = 'block';
+        }
     }
 
     // Show main application
