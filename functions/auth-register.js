@@ -151,7 +151,7 @@ exports.handler = async (event, context) => {
 
     // Check if username, email or ID number already exists
     const existingUser = await pool.query(
-      'SELECT user_id FROM users WHERE username = $1 OR email = $2',
+      'SELECT user_id FROM hr.users WHERE username = $1 OR email = $2',
       [username, email]
     );
 
@@ -168,7 +168,7 @@ exports.handler = async (event, context) => {
 
     // Check if ID number already exists
     const existingEmployee = await pool.query(
-      'SELECT employee_id FROM employees WHERE id_number = $1',
+      'SELECT employee_id FROM hr.employees WHERE id_number = $1',
       [id_number]
     );
 
@@ -189,7 +189,7 @@ exports.handler = async (event, context) => {
 
     // Create new user
     const userResult = await pool.query(
-      `INSERT INTO users (username, email, password_hash, role, is_active) 
+      `INSERT INTO hr.users (username, email, password_hash, role, is_active) 
        VALUES ($1, $2, $3, $4, $5) 
        RETURNING user_id, username, email, role, is_active, created_at`,
       [username, email, hashedPassword, 'employee', true]
@@ -199,7 +199,7 @@ exports.handler = async (event, context) => {
 
     // Create basic employee record
     const employeeResult = await pool.query(
-      `INSERT INTO employees (user_id, first_name, last_name, email, phone, id_number, employee_number) 
+      `INSERT INTO hr.employees (user_id, first_name, last_name, email, phone, id_number, employee_number) 
        VALUES ($1, $2, $3, $4, $5, $6, $7) 
        RETURNING employee_id`,
       [
@@ -217,7 +217,7 @@ exports.handler = async (event, context) => {
 
     // Log the registration
     await pool.query(
-      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, new_values) 
+      `INSERT INTO hr.audit_logs (user_id, action, entity_type, entity_id, new_values) 
        VALUES ($1, 'REGISTER', 'user', $2, $3)`,
       [newUser.user_id, newUser.user_id, JSON.stringify({ 
         username, 
@@ -243,7 +243,7 @@ exports.handler = async (event, context) => {
 
     // Update last login
     await pool.query(
-      'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = $1',
+      'UPDATE hr.users SET last_login = CURRENT_TIMESTAMP WHERE user_id = $1',
       [newUser.user_id]
     );
 
@@ -290,7 +290,7 @@ async function generateEmployeeNumber() {
     
     // Get the highest employee number for current year
     const result = await pool.query(
-      `SELECT employee_number FROM employees 
+      `SELECT employee_number FROM hr.employees 
        WHERE employee_number ~ $1 
        ORDER BY employee_number DESC 
        LIMIT 1`,
