@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  connectionString: 'postgresql://neondb_owner:npg_lOh28bqVrHYC@ep-curly-heart-aeh5ihpv-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&search_path=hr',
+  ssl: { rejectUnauthorized: false }
 });
 
 exports.handler = async (event, context) => {
@@ -237,7 +237,7 @@ exports.handler = async (event, context) => {
         username: newUser.username, 
         role: newUser.role 
       },
-      process.env.JWT_SECRET || 'hr_system_secret_key',
+      'hr-system-jwt-secret-key-2024-secure-token',
       { expiresIn: '8h' }
     );
 

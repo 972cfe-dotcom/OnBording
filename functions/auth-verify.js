@@ -3,11 +3,11 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  connectionString: 'postgresql://neondb_owner:npg_lOh28bqVrHYC@ep-curly-heart-aeh5ihpv-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&search_path=hr',
+  ssl: { rejectUnauthorized: false }
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'hr-system-secret-key-change-in-production';
+const JWT_SECRET = 'hr-system-jwt-secret-key-2024-secure-token';
 
 // Helper function to verify JWT and get user data
 async function verifyToken(token) {
